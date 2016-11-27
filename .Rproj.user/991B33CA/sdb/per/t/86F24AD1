@@ -1,0 +1,20 @@
+{
+    "collab_server" : "",
+    "contents" : "\"from\",\"to\"\n\"lexi\",\"sloan\"\n\"lexi\",\"karev\"\n\"owen\",\"yang\"\n\"owen\",\"altman\"\n\"sloan\",\"torres\"\n\"sloan\",\"altman\"\n\"torres\",\"arizona\"\n\"torres\",\"karev\"\n\"derek\",\"grey\"\n\"karev\",\"izzie\"\n\"o'malley\",\"izzie\"\n\"torres\",\"o'malley\"\n\"yang\",\"colin\"\n\"yang\",\"preston\"\n\"karev\",\"kepner\"\n\"sloan\",\"addison\"\n\"karev\",\"addison\"\n\"derek\",\"addison\"\n\"sloan\",\"nancy\"\n\"karev\",\"olivia\"\n\"o'malley\",\"olivia\"\n\"grey\",\"o'malley\"\n\"karev\",\"mrs. seabury\"\n\"chief\",\"adele\"\n\"chief\",\"ellis grey\"\n\"ellis grey\",\"thatch grey\"\n\"susan grey\",\"thatch grey\"\n\"bailey\",\"tucker\"\n\"izzie\",\"hank\"\n\"izzie\",\"denny\"\n\"grey\",\"finn\"\n\"grey\",\"steve\"\n\"bailey\",\"ben\"\n\"lexi\",\"avery\"\n",
+    "created" : 1476893451169.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "2867994864",
+    "id" : "86F24AD1",
+    "lastKnownWriteTime" : 1476893327,
+    "last_content_update" : 1476893327,
+    "path" : "~/ASU/dv/R--network/ga_edgelist.csv",
+    "project_path" : null,
+    "properties" : {
+    },
+    "relative_order" : 1,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "text"
+}

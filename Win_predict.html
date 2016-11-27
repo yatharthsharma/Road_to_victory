@@ -1,0 +1,703 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+	<meta charset="utf-8">
+	<title>
+		Path to Victory
+	</title>
+		<style>
+		/*TODO :  create a separate CSS file*/
+			.node circle {
+			  fill: #fff;
+			  stroke: steelblue;
+			  stroke-width: 3px;
+			}
+
+			.player-select {
+				border: 1px solid #ccc;
+				width: 120px;
+				border-radius: 3px;
+				overflow: hidden;
+			   
+				   padding: 5px 8px;
+				width: 20%;
+				-webkit-border-radius: 20px;
+				border-radius: 20px;
+
+			}
+
+			.node text { font: 12px sans-serif; }
+
+			.link {
+			  fill: none;
+			  stroke: #ccc;
+			  stroke-width: 3px;
+			}
+
+		  .link .over-mouse{
+			fill: red;
+			stroke: #ccc;
+			stroke-width: 3px;
+		  }
+			#button-reset {
+			    background-color:  #900; /* Green */
+			    border:none;
+			    color: white;
+			    padding: 7px 7px;
+			    text-align: center;
+			    text-decoration: none;
+			    display: inline-block;
+			    font-size: 14px;
+			}
+		  .ticks {
+				  font: 10px sans-serif;
+				}
+
+				.track,
+				.track-inset,
+				.track-overlay {
+				  stroke-linecap: round;
+				}
+
+				.track {
+				  stroke: #000;
+				  stroke-opacity: 0.3;
+				  stroke-width: 10px;
+				}
+
+				.track-inset {
+				  stroke: #ddd;
+				  stroke-width: 8px;
+				}
+
+				.track-overlay {
+				  pointer-events: stroke;
+				  stroke-width: 50px;
+				  cursor: crosshair;
+				}
+
+				.handle {
+				  fill: #fff;
+				  stroke: #000;
+				  stroke-opacity: 0.5;
+				  stroke-width: 1.25px;
+				}
+
+			input[type=range]{
+			    /* fix for FF unable to apply focus style bug  */
+			    border: 1px solid white; 
+
+			    /*required for proper track sizing in FF*/
+			    /*width: 300px;*/
+			}
+
+			input[type=range]::-moz-range-track {
+			    /*width: 300px;*/
+			    height: 5px;
+			    background: #ddd;
+			    border: none;
+			    border-radius: 3px;
+			}
+
+			input[type=range]::-moz-range-thumb {
+			    border: none;
+			    height: 16px;
+			    /*width: 16px;*/
+			    border-radius: 50%;
+			    background: goldenrod;
+			}
+
+			div.tooltip {	
+			    position: absolute;			
+			    text-align: center;			
+			    width: 150px;					
+			    height: 30px;					
+			    padding: 2px;				
+			    font: 12px sans-serif;		
+			    background: lightsteelblue;	
+			    border: 0px;		
+			    border-radius: 8px;			
+			    pointer-events: none;			
+			}
+			/*hide the outline behind the border*/
+			input[type=range]:-moz-focusring{
+			    outline: 1px solid white;
+			    outline-offset: -1px;
+			}
+
+			input[type=range]:focus::-moz-range-track {
+			    background: #ccc;
+			}
+
+		</style>
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+	<script src="http://d3js.org/d3.v3.min.js"></script>
+
+	
+  </head>
+  <body>	 
+
+<div class="container">
+	<div class="row" style="text-align:center;color:white;background:black">
+		<h1>
+				 ROAD TO VICTORY
+				<h5>
+						US Open Men - Game Predictor
+				</h5>
+		</h1>
+		
+	</div>
+		<br >
+		<br >
+
+	<div class="row"  >
+
+		<div class ="col-sm-3"  style="text-align:right;">
+		<b>SELECT A PLAYER</b>
+		</div >
+		<div class ="col-sm-9" id="select-div" style="text-align:center;">
+		</div>
+	</div>
+		<br >
+		<br >
+		<div class="row">
+			<div id="firstServe" class="col-sm-3">
+				<label class="label_name" id= "firstServe-label-name" style="color:#addd8e"> First Serve %  </label> 
+				<label class="label_slider" id= "firstServe-label"> </label> <br>
+				<input type="range"  id="slide-firstServe" name="myRange" min="0" max="100" value="0" >
+				
+			</div>
+			<div id="ace" class="col-sm-3">
+			<label class="label_name" id= "ace-label-name" style="color:#2B8CBE">	ACE </label>  
+			<label class="label_slider" id= "ace-label"> </label> <br>
+				 <input type="range" id="slide-ace"  name="myRange" min="0" max="50" value="0">
+			</div>
+			<div id="double" class="col-sm-3">
+			<label class="label_name" id= "ace-label-name" style="color:#99d8c9">	DOUBLE  </label>
+			<label class="label_slider" id= "double-label"> </label> <br>
+				  <input type="range" id="slide-double"  name="myRange" min="0" max="50" value="0">
+			</div>
+			<div id="firstPointWon" class="col-sm-3">
+			
+			<label class="label_name" id= "firstPointWon-label-name" style="color:#fc9272">	First Point Won %   </label>
+			<label class="label_slider" id= "firstPointWon-label"> </label> <br>
+				 <input type="range" id="slide-firstPointWon" name="myRange" min="0" max="100" value="0">
+			</div>
+		</div>
+		<br >
+		<div class="row">
+			<div id="secPointWon" class="col-sm-3">
+			<label class="label_name" id= "secPointWon-label-name" style="color:#feb24c">	Second Point Won %   </label>
+			<label class="label_slider" id= "secPointWon-label"> </label> <br>
+				  <input type="range" id="slide-secPointWon" name="myRange" min="0" max="100" value="0">
+			</div>
+			<div id="avgFirstServe" class="col-sm-3">
+			<label class="label_name" id= "avgFirstServe-label-name" style="color:#90F11E">	Average First Serve (KPH)  </label>
+			<label class="label_slider" id= "avgFirstServe-label"> </label> <br>
+				  <input type="range" id="slide-avgFirstServe" name="myRange" min="0" max="300" value="0">
+			</div>
+			<div id="avgSecServe" class="col-sm-3">
+			<label class="label_name" id= "avgSecServe-label-name" style="color:#bdbdbd">	Average Second Serve (KPH)    </label>
+			<label class="label_slider" id= "avgSecServe-label"> </label> <br>
+				 <input type="range" id="slide-avgSecServe" name="myRange" min="0" max="300" value="0">
+			</div>
+			<div id="net" class="col-sm-3">
+			<label class="label_name" id= "net-label-name" stye="color:#2E0854">	NET %    </label>
+			<label class="label_slider" id= "net-label"> </label> <br>
+				 <input type="range" id="slide-net" name="myRange" min="0" max="100" value="0">
+			</div>
+		</div>
+		<br >
+		<div class="row">
+			<div id="break" class="col-sm-3">
+			<label class="label_name" id= "break-label-name" style="color:#e8f400">	BREAK %  </label>
+			<label class="label_slider" id= "break-label"> </label> <br>
+				 <input type="range" id="slide-break" name="myRange" min="0" max="100" value="0">
+			</div>
+			<div id="return" class="col-sm-3">
+			<label class="label_name" id= "return-label-name" style="color:#DF65B0">	Return % </label>
+			<label class="label_slider" id= "return-label"> </label> <br>
+				  <input type="range" id="slide-return" name="myRange" min="0" max="100" value="0">
+			</div>
+			<div id="winner" class="col-sm-3">
+			<label class="label_name" id= "winner-label-name" style="color:#00ffff">	Winner   </label>
+			<label class="label_slider" id= "winner-label"> </label> <br>
+				  <input type="range" id="slide-winner" name="myRange" min="0" max="120" value="0">
+			</div>
+			<div id="error" class="col-sm-3">
+			<label class="label_name" id= "error-label-name" style="color:#8B4513">	Error	   </label>
+			<label class="label_slider" id= "error-label"> </label> <br>
+				  <input type="range" id="slide-error" name="myRange" min="0" max="120" value="0">
+			</div>
+		</div>
+		<br >
+		<div class="row" style="text-align:left">
+			<div class ="col-sm-3"  style="text-align:left;">
+				<input type="button" id="button-reset" name="reset" value="Reset Sliders" onclick="resetSlider(0)">
+			</div >
+		</div>
+	<div class="row">
+		<div class="col-sm-1">
+		</div>
+		<div class= "col-sm-8" style:"text-align:center">
+			<div id="tree_graph">
+			</div>
+		</div>	 
+		<div class="col-sm-1 col-sm-offset-1" style:"text-align:left">
+		<br >
+		<br >
+		<br >
+		<br >
+		<br >
+		<br >
+		<br >
+		<br >
+		<br >
+		<br >
+		<br >
+		<br >
+
+			<input type= "text" id="#verdict" disabled value="" >
+		</div>
+		<div class="col-sm-2" style:"text-align:left">
+		</div>
+	</div>
+</div>
+	
+
+	
+	<script>
+	
+	 colorrange = ["#addd8e", "#2B8CBE", "#99d8c9", "#fc9272", "#feb24c", "#90F11E", "#bdbdbd", "#e8f400", "#DF65B0", "#00ffff", "#8B4513", "#2E0854"];
+		function resetSlider(arg){
+				d3.selectAll(".label_slider").text(0);
+
+						document.getElementById("slide-firstServe").value = "0";
+						document.getElementById("slide-ace").value = "0";
+						document.getElementById("slide-double").value = "0";
+						document.getElementById("slide-firstPointWon").value = "0";
+						document.getElementById("slide-secPointWon").value = "0";
+						document.getElementById("slide-avgFirstServe").value = "0";
+						document.getElementById("slide-avgSecServe").value = "0";
+						document.getElementById("slide-break").value = "0";
+						document.getElementById("slide-return").value = "0";
+						document.getElementById("slide-winner").value = "0";
+						document.getElementById("slide-error").value = "0";
+						document.getElementById("slide-net").value = "0";
+						d3.selectAll('circle').style("fill","#fff").attr("r","15");
+						d3.selectAll('.link').style("stroke","#ccc").style("fill","none");
+
+						// run_simluation('Rafael Nadal')
+						document.getElementById("#verdict").value = " ";
+						
+				}
+	//code for slider taken from -->
+
+		var margin = {top: 40, right: 120, bottom: 20, left: 120},
+			width = 960 - margin.right - margin.left,
+			height = 500 - margin.top - margin.bottom;
+			
+		var i = 0;
+
+		var svg = d3.select("#tree_graph").append("svg")
+		  .attr("width", width + margin.right + margin.left)
+		  .attr("height", height + margin.top + margin.bottom)
+		  .append("g")
+		  .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+		var div = d3.select("body").append("div")	
+		    .attr("class", "tooltip")				
+		    .style("opacity", 0);
+				var tree = d3.layout.tree()
+					.size([500, 400]);
+
+		var diagonal = d3.svg.diagonal()
+		  .projection(function(d) { return [d.x, d.y ]; });
+
+
+		var val_input = {"0":0,"1":0,"3":0,"4":0,"5":0,"6":0,"7":0,"8":0,"9":0,"10":0,"11":0,"12":0,"13":0} 
+			 
+		var players_pre = {}
+		var players = []
+		d3.csv("usopen_men.csv",function(error,data){
+			 if (error) return console.warn(error);
+			
+			data.forEach(function(d){
+				if(!players_pre.hasOwnProperty(d.player1)){
+					players.push(d.player1);
+					players_pre[d.player1] = 1;
+				 
+				}
+			
+			});
+		
+		var select = d3.select('#select-div').append('select')
+			.attr("class","player-select")
+			.attr("id","player-select-id")
+			.on("change",function(d){
+				//reseting everythin
+				resetSlider(1);
+
+				// returning the value
+				var play = d3.select(this)
+				.selectAll("option")
+				.filter(function (d, i) { 
+					return this.selected; 
+				});
+			
+				run_simluation(play[0][0]['label']);
+		});
+
+		var options = select
+		  .selectAll('option')
+			.data(players).enter()
+			.append('option')
+				.text(function (d) { return d; })
+
+		run_simluation('Rafael Nadal')
+
+		function run_simluation(select_player){
+
+		  d3.json(select_player+".json",function(error,data){
+		 
+		  if (error) return console.warn(error);
+			
+		  // var filter_data = data
+			var nodes = tree.nodes(data);
+			
+			var links = tree.links(nodes);
+			 
+			// Normalize for fixed-depth.
+			// nodes.forEach(function(d) { d.y = d.depth * 100; });
+
+			// // Declare the nodes…
+		  label = {"0":"firstServe","1":"ace","2":"double","3":"firstPointWon","4":"secPointWon","5":"avgFirstServe","6":"avgSecServe","7":"break","8":"return","9":"winner","10":"error","11":"net"
+				}
+			
+			
+			d3.selectAll('.node').remove();
+			var node = svg.selectAll("node")
+			  .data(nodes);
+
+			node.enter()
+			  .append("g")
+				.attr("class","node")
+				.attr("transform", function(d) { 
+				 return "translate(" + d.x + "," + d.y + ")"; })
+			  .append("circle")
+			  .attr("r", 15)
+			  .style("fill", "#fff")
+			  .on("mouseover",function(d){ 
+				var selected = node.filter(function(d2){
+					  if (d.label == d2.label)
+					  { 
+						var tip_data = ""
+					  	// console.log(label[d.label.split([']'])[0].split('[')[1]])
+					  	if (d2.type == "split"){
+					  		tip_data =label[d.label.split([']'])[0].split('[')[1]] + d.label.split([']'])[1] 
+					  	}
+					  	else
+					  	{
+					  		tip_data = d.value[0] < d.value[1] ? "Lost":"Won"
+					  	}
+					   	div.transition()		
+		        		.duration(200)		
+		        		.style("opacity", .9);
+		        		div.html(tip_data )	
+		                .style("left", (d3.event.pageX) + "px")		
+		                .style("top", (d3.event.pageY - 28) + "px");
+		                d.label.split([']'])[0].split('[')[1];
+						return d
+					  }
+					  });
+					  selected.select("circle")
+					   // .attr("r","30")
+	
+			            })	
+					   // .append("text");
+					   // selected.select("text").text("ads");
+
+			  
+			  .on("mouseout",function(d){ 
+			 	var selected = node.filter(function(d2){
+					  if (d.label == d2.label)
+					  { 
+						return d
+					  }
+					  });
+
+					  selected.select("circle")
+					   // .attr("r","15");
+					    div.transition()		
+		                .duration(500)		
+		                .style("opacity", 0);	
+			  })
+			  .transition()
+			  .duration(2000)
+			  .style("fill",function(d){
+					if(d.type == "leaf"){
+					 
+					  return  d.value[0] < d.value[1] ? "red":"green";
+					}
+					else if(d.type == "split")
+					{
+					   index = d.label.split([']'])[0].split('[')[1];
+					   
+						return colorrange[index];
+						// code for color
+					}
+				  })
+
+
+			  node.exit().remove();
+
+			//   .on("mouseover",function(d){ 
+			//         if(d.type == "leaf"){
+					 
+			//           return  d.value[0] < d.value[1] ? "Lost":"Won";
+			//         }
+			//         else if(d.type == "split")
+			//         {
+			//            index = d.label.split([']'])[0].split('[')[1];
+			//             return label[index];
+			//         }
+			//   })
+
+			// node.append("text")
+			 //   .text(function(d) {  
+			//   }) 
+
+			// Declare the links…
+
+			 d3.selectAll(".link").remove();
+			var branch =svg.selectAll(".link")
+			  .data(links);	 
+
+			
+			 branch.enter()
+			 .insert("path", "g")
+			  .attr("class", "link")
+			  .attr("fill","none")
+			  .attr("stroke","#ccc")
+			 //  .on("mouseover",function(d){
+				// // tool tip
+			 //  })
+
+			branch.attr("d", diagonal)
+			
+			
+			branch.exit().transition().remove();
+
+			 
+
+
+			 d3.select("#slide-firstServe").on("input", function() {
+			
+			 val_input["0"] = parseFloat(this.value);
+			  // console.log(val_input);
+			  d3.selectAll("#firstServe-label").text(this.value);
+			  traverse(val_input)
+			 });
+
+			 d3.select("#slide-ace").on("input", function() {
+
+			d3.selectAll("#ace-label").text(this.value);
+			 val_input["1"] = parseFloat(this.value);
+			  // console.log(val_input);
+			  traverse(val_input)
+			 });
+
+			 d3.select("#slide-double").on("input", function() {
+			d3.selectAll("#double-label").text(this.value);
+			 val_input["2"] = parseFloat(this.value);
+			  // console.log(val_input);
+			  traverse(val_input)
+			 });  
+				 
+			 d3.select("#slide-firstPointWon").on("input", function() {
+			d3.selectAll("#firstPointWon-label").text(this.value);
+			 val_input["3"] = parseFloat(this.value);
+			  // console.log(val_input);
+			  traverse(val_input)
+			 });  
+
+			 d3.select("#slide-secPointWon").on("input", function() {
+			d3.selectAll("#secPointWon-label").text(this.value);
+			 val_input["4"] = parseFloat(this.value);
+			  // console.log(val_input);
+			  traverse(val_input)
+			 });  
+
+ 
+			 d3.select("#slide-avgFirstServe").on("input", function() {
+			d3.selectAll("#avgFirstServe-label").text(this.value);
+			 val_input["5"] = parseFloat(this.value);
+			  // console.log(val_input);
+			  traverse(val_input)
+			 });  
+
+			 d3.select("#slide-avgSecServe").on("input", function() {
+			d3.selectAll("#avgSecServe-label").text(this.value);
+			 val_input["6"] = parseFloat(this.value);
+			  // console.log(val_input);
+			  traverse(val_input)
+			 });  
+			 d3.select("#slide-break").on("input", function() {
+			d3.selectAll("#break-label").text(this.value);
+			 val_input["7"] = parseFloat(this.value);
+			  // console.log(val_input);
+			  traverse(val_input)
+			 });  
+			  d3.select("#slide-return").on("input", function() {
+			d3.selectAll("#return-label").text(this.value);
+			 val_input["8"] = parseFloat(this.value);
+			  // console.log(val_input);
+			  traverse(val_input)
+			 });  
+
+			 d3.select("#slide-winner").on("input", function() {
+			d3.selectAll("#winner-label").text(this.value);
+			 val_input["9"] = parseFloat(this.value);
+			  // console.log(val_input);
+			  traverse(val_input)
+			 });  
+
+			 d3.select("#slide-error").on("input", function() {
+			d3.selectAll("#error-label").text(this.value);
+			 val_input["10"] = parseFloat(this.value);
+			  // console.log(val_input);
+			  traverse(val_input)
+			 });  
+
+			 d3.select("#slide-net").on("input", function() {
+			d3.selectAll("#net-label").text(this.value);
+			 val_input["11"] = parseFloat(this.value);
+			  // console.log(val_input);
+			  traverse(val_input)
+			 });  
+
+
+				function traverse(val_input){
+
+
+					//revert to original
+					svg.selectAll("circle")
+					  .style("stroke","teelblue")
+						.style("fill",function(d){
+						if(d.type == "leaf"){
+						 
+						  return  d.value[0] < d.value[1] ? "red":"green";
+						}
+						else if(d.type == "split")
+						{
+							index = d.label.split([']'])[0].split('[')[1];
+					   
+							return colorrange[index];
+							// return "#fff"
+						}
+					  })
+					   .attr("r","15");
+						   
+						svg.selectAll("path")
+								  .style("fill","none")
+								 .style("stroke","#ccc")
+
+					type = 1;
+					 root  = nodes[0];
+				 while(type){
+
+					   if(root.type == "leaf") {
+						  type = 0;
+						  if(root.value[0] < root.value[1])
+						  {
+							var selected = node.filter(function(d){
+							  if (d.label == root.label)
+							  { 
+								return d
+							  }
+							  });
+							  selected.select("circle")
+							   .attr("r","21");
+
+							 document.getElementById('#verdict').value = " " +select_player +"  LOSES";
+							 document.getElementById("#verdict").style.color = "red";
+
+						  }
+						  else {
+							var selected = node.filter(function(d){
+							  if (d.label == root.label)
+							  { 
+								return d
+							  }
+							  });
+							  selected.select("circle")
+								.attr("r","21");
+								 document.getElementById('#verdict').value = " "+ select_player +" WINS";
+								 document.getElementById("#verdict").style.color = "Green";
+						  }
+
+					   }
+					   else {
+
+							var index = root.label.split([']'])[0].split('[')[1];
+							var val_index =  parseInt(root.label.split(['='])[1].split(" ")[1]);
+							if(parseFloat(val_input[index]) > val_index){
+							var selected = node.filter(function(d){
+							  if (d.label == root.label)
+							  {
+								return d
+							  }
+							});
+							  selected.select("circle")
+							  // .style("fill","yellow")
+							   .attr("r","21");
+							  var branch_selected =  branch.filter(function(d){
+								if (d.target.label == root.children[1].label ){
+								  return d;
+								} }); 
+								
+								if(branch_selected !== undefined){
+									
+								   branch_selected[0][0]['style']['stroke'] = "blue"; 
+									  }   
+											 
+							root = root.children[1];
+							// branch.style("stroke","yellow");
+							}
+						   else
+						   {
+
+							var selected = node.filter(function(d){
+
+							  if (d.label == root.label)
+							  { 
+								return d
+							  }
+							  });
+							  selected.select("circle")
+							  // .style("fill","yellow")
+							   .attr("r","21");
+							
+							 var branch_selected =  branch.filter(function(d){
+								if (d.target.label == root.children[0].label ){
+								  return d;
+								}});
+								
+								if(branch_selected !== undefined){
+								   branch_selected[0][0]['style']['stroke'] = "blue"; 
+								   }   	
+
+							root = root.children[0];
+							}
+						   }
+					 }
+				}
+		  });
+			
+		}
+	});
+	</script>
+</body>
+</html>
