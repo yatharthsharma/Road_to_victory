@@ -1,50 +1,47 @@
 
-# D3: Data-Driven Documents
-
-<a href="https://d3js.org"><img src="https://d3js.org/logo.svg" align="left" hspace="10" vspace="6"></a>
-
-**D3** (or **D3.js**) is a JavaScript library for visualizing data using web standards. D3 helps you bring data to life using SVG, Canvas and HTML. D3 combines powerful visualization and interaction techniques with a data-driven approach to DOM manipulation, giving you the full capabilities of modern browsers and the freedom to design the right visual interface for your data.
-
-## Resources
-
-* [API Reference](https://github.com/d3/d3/blob/master/API.md)
-* [Release Notes](https://github.com/d3/d3/releases)
-* [Gallery](https://github.com/d3/d3/wiki/Gallery)
-* [Examples](http://bl.ocks.org/mbostock)
-* [Wiki](https://github.com/d3/d3/wiki)
-
-## Installing
-
-If you use npm, `npm install d3`. Otherwise, download the [latest release](https://github.com/d3/d3/releases/latest). The released bundle supports anonymous AMD, CommonJS, and vanilla environments. You can load directly from [d3js.org](https://d3js.org), [CDNJS](https://cdnjs.com/libraries/d3), or [unpkg](https://unpkg.com/d3/). For example:
-
-```html
-<script src="https://d3js.org/d3.v4.js"></script>
-```
-
-For the minified version:
-
-```html
-<script src="https://d3js.org/d3.v4.min.js"></script>
-```
-
-You can also use the standalone D3 microlibraries. For example, [d3-selection](https://github.com/d3/d3-selection):
-
-```html
-<script src="https://d3js.org/d3-selection.v1.js"></script>
-```
-
-D3 is written using [ES2015 modules](http://www.2ality.com/2014/09/es6-modules-final.html). Create a [custom bundle using Rollup](http://bl.ocks.org/mbostock/bb09af4c39c79cffcde4), Webpack, or your preferred bundler. To import D3 into an ES2015 application, either import specific symbols from specific D3 modules:
-
-```js
-import {scaleLinear} from "d3-scale";
-```
-
-Or import everything into a namespace (here, `d3`):
-
-```js
-import * as d3 from "d3";
-```
-
 # Road_to_victory
 A tennis win predictor. 
 
+To run: Open Assign2-YatharthSharma.html, Please use Firefox, leave the json file in the same directory
+Data Analysis:
+1) Handling missing data: The missing data was completed by using the mean value of player’s attribute (For
+example: to fill FastServe for roger federer, mean of all other roger federer matches was taken).
+2) Some basic data analysis was done on excel/R by creating charts and using summary function in R to look for
+interesting pattern. But simple pattern were found
+3) Since, this time we had a lot of data, I placed more focus of analysing data in order to predict the outcome based
+on player’s stats.
+Data Mining approach:
+1) A decision tree classification model was applied for every player.
+2) Output were 2 classes - win or lost (this was done for individual player)
+3) Input was selected based on the above data analysis result and intuition of what the user would want to select
+the attribute as input.
+4) Players who never won or lost were removed from the data set.
+5) The decision tree was created for each a every player with 2 classes and was saved in <player_name>.json file
+(It created 350 json file, I tried to merge them but the file size cause delay in the visualization).
+6) Main Idea : Predicted the outcome given player’s past records.
+Visualization Design:
+The best way to visualization a decision tree classifier was to create an interactive tree itself which would map the path
+to victory/loss based on the input selected.
+● The node of the tree (d3 circles) represents the splitting attribute at that level.
+● The leaf of the tree (d3 path) represents whether the player will win or lose.
+● Input was given with the help of a d3 slider and the player was selected using drop down menu.
+Interactions and how to reach the result:
+● The first interaction starts by user selecting a player [ by default a player has been given]
+● The selection of a player generates/regenerated the decision tree with the non leaf node colored according to the
+input parameters and the leaf node colored as {green: win; red:lost}
+● User can provide the input using the slider presented above the tree.
+● Sliding the input parameters caused 2 things [Extra focus was given here so that this interaction is simple]
+○ Enlarges the nodes of the tree and colors the path that tree follows according to the input provided,
+thereby displaying if the player won provided that input.
+○ Displaying the current value of the input above.
+● Selecting a different player from the drop down menu created a different tree for the new player.
+● A reset button was also provided to reset the input to their initial values.
+Aim of the visualization: What if scnenarios
+Path to Victory is an interactive prediction tool with strong data analysis as its base (decision tree classifier). This tool can
+be used by the users to evaluate/predict the output of the match based on player’s current statistics and can be used by
+the player/coach to access what input parameters should be focussed more in order to win the game.
+My visualization uses user-driven narrative to trace out the path of victory or loss depending upon the values selected.
+The main aim of this visualization was to provide users with a way by which they can model what-if scenarios as in: “How
+can Nadal win a match even if he has less than 40% firstServe wins”,
+“Given Dokovic’s current input parameters, what can he do to win the match”
+Moreover, by looking at the tree nodes, it can be easily seen which attributes affects a player the most.
