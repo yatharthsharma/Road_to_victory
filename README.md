@@ -4,12 +4,16 @@ A tennis win predictor.
 
 To run: Open Assign2-YatharthSharma.html, Please use Firefox, leave the json file in the same directory
 Data Analysis:
+
+
 1) Handling missing data: The missing data was completed by using the mean value of player’s attribute (For
 example: to fill FastServe for roger federer, mean of all other roger federer matches was taken).
 2) Some basic data analysis was done on excel/R by creating charts and using summary function in R to look for
 interesting pattern. But simple pattern were found
 3) Since, this time we had a lot of data, I placed more focus of analysing data in order to predict the outcome based
 on player’s stats.
+
+
 Data Mining approach:
 1) A decision tree classification model was applied for every player.
 2) Output were 2 classes - win or lost (this was done for individual player)
@@ -19,6 +23,9 @@ the attribute as input.
 5) The decision tree was created for each a every player with 2 classes and was saved in <player_name>.json file
 (It created 350 json file, I tried to merge them but the file size cause delay in the visualization).
 6) Main Idea : Predicted the outcome given player’s past records.
+
+
+
 Visualization Design:
 The best way to visualization a decision tree classifier was to create an interactive tree itself which would map the path
 to victory/loss based on the input selected.
